@@ -64,3 +64,9 @@ It is made with:
 
     );
     ```
+
+7. Install Bower
+
+8. run ```./deploy.sh```
+
+9. Enjoy!

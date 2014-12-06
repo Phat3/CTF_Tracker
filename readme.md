@@ -67,6 +67,12 @@ It is made with:
 
 7. Install Bower
 
-8. run ```./deploy.sh```
+8. Install npm
 
-9. Enjoy!
+9. run ```sudo npm install```
+
+10. run ```bower install```
+
+11. run ```./deploy.sh```
+
+12. Enjoy!

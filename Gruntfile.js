@@ -45,8 +45,9 @@
                         dest: '<%= options.publish %>/js/vendor.js'
                     }
                },
-                
-             less: {
+               
+            //compile and minify less file   
+            less: {
                  local: {
                      options: {
                          paths: ["assets/less"],
@@ -58,21 +59,23 @@
                          paths: ["assets/less"],
                          cleancss: true,
                      },
-                     files: {"public/css/main.css": "assets/less/main.less"},
+                     files: {"<%= options.publish %>/css/main.css": "<%= options.base %>/less/main.less"},
                  }
              },
              
             // Javascript minification - uglify
             uglify: {
+                vendor : {
                     options: {
                             preserveComments: false,
                             mangle: false
                     },
                     js: {
                             files: {
-                                  "public/js/vendor.min.js": "public/js/vendor.js"
+                                  "<%= options.publish %>/js/vendor.min.js": "<%= options.publish %>/js/vendor.js"
                             },
                     },
+                }
             },
             
          });
@@ -83,5 +86,8 @@
          grunt.loadNpmTasks('grunt-contrib-uglify');
          
          //divide our task in subtask for each environment
-         grunt.registerTask('default', ['concat:vendor', 'uglify']);
+         //task for production (compile and minify all)
+         grunt.registerTask('production', ['concat:vendor', 'uglify', 'less']);
+         //task for local env (compile and minify only less file and vendor)
+         grunt.registerTask('local', ['concat:vendor', 'uglify:vendor', 'less']);
      };

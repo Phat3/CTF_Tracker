@@ -17,7 +17,10 @@
                 // Base path to your assets folder
                 base: 'assets',
                 // Published assets path
-                publish: 'public',
+                publish: 'public',              
+                //prepend banner after each compile task
+                compileBanner : '/*! <%= options.name %> - v<%= options.version %> - ' +
+                               'compiled at <%= grunt.template.today("yyyy-mm-dd HH:MM") %> */\n',
                 //we use bower as packet manager then all vendor package are under bower_components directory
                 vendor: {
                     //our root directory for every vendor package
@@ -26,7 +29,7 @@
                     concat: [
                         "<%= options.vendor.base %>/angularjs/angular.js",
                         "<%= options.vendor.base %>/jquery-legacy/dist/jquery.min.js"
-                    ],
+                    ]
                 },            
                 // Notification messages options
                 notify: {
@@ -42,13 +45,8 @@
                                 title: 'CTF_Tracker Reloaded!',
 				message: 'Files were modified, recompiled and site reloaded'
                         }
-                },
-                //uglify options
-                uglify : {
-                    banner : '/* <%= options.name %> - v<%= options.version %> - ' +
-                             'compiled at <%= grunt.template.today("yyyy-mm-dd HH:MM") %> */\n'
                 }
-
+                               
             },
             
             // Concatenate multiple js files into one
@@ -68,15 +66,20 @@
                  local: {
                      options: {
                          paths: ["assets/less"],
+                         //track the date of the last compile task
+                         banner: '<%= options.compileBanner %>'
                      },
                      files: {"public/css/main.css": "assets/less/main.less"}
                  },
                  production: {
                      options: {
                          paths: ["assets/less"],
+                         //minify css
                          cleancss: true,
+                         //track the date of the last compile task
+                         banner: '<%= options.compileBanner %>'
                      },
-                     files: {"<%= options.publish %>/css/main.css": "<%= options.base %>/less/main.less"},
+                     files: {"<%= options.publish %>/css/main.min.css": "<%= options.base %>/less/main.less"}
                  }
              },
                    
@@ -104,16 +107,13 @@
             
             // Watch for files and folder changes
             watch: {
-                    local: {
-                            options: {
-                                    livereload: true
-                            },
-
-                            css: {
-                                    files: '<%= options.base %>/less/main.less', 
-                                    tasks: ['less:local', 'notify:css']
-                            },
-                    }
+                    options: {
+                        livereload: true
+                    },
+                    css: {
+                        files: '<%= options.base %>/less/main.less', 
+                        tasks: ['less:local', 'notify:css']
+                    }                  
             },
             
             // Clean files and folders before replacement
@@ -129,7 +129,7 @@
                     },
                     concat: {
                             src: '<%= options.publish %>/js/concat.*' 
-                    },
+                    }
             },
             
             // Javascript minify (run this task only in production)
@@ -144,8 +144,8 @@
                             compress: {
                                 drop_console: true
                             },
-                            //track the date of the last compilation
-                            banner: '<%= options.uglify.banner %>'
+                            //track the date of the last compile task
+                            banner: '<%= options.compileBanner %>'
                             
                     },                   
                     files: { 
@@ -153,7 +153,7 @@
                     }
                     
                 }
-            },
+            }
             
          });
          
@@ -169,7 +169,7 @@
          //task for production (compile and minify all)
          grunt.registerTask('default', ['clean:all', 'concat:vendor', 'uglify', 'clean:concat', 'less:production', 'notify:all']);
          //task for local env (compile and minify only less file and vendor)
-         grunt.registerTask('local', ['clean:all', 'concat:vendor', 'uglify:vendor', 'less:local']);
+         grunt.registerTask('local', ['clean:all', 'concat:vendor', 'uglify:vendor', 'clean:concat', 'less:local', 'watch:css']);
          //prova notify
          grunt.registerTask('not', ['notify']);
      };

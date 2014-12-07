@@ -45,8 +45,18 @@
                                 title: 'CTF_Tracker Reloaded!',
 				message: 'Files were modified, recompiled and site reloaded'
                         }
-                }
-                               
+                },
+                // Less compiler options
+                less:{
+                    paths : ["assets/*"],
+                    files : ""
+                },
+                // Watch compiler options
+                watch:{
+                    css:{
+                        files : ""
+                    }
+                }                             
             },
             
             // Concatenate multiple js files into one
@@ -65,21 +75,21 @@
             less: {
                  local: {
                      options: {
-                         paths: ["assets/less"],
+                         paths: '<%= options.less.path %>',
                          //track the date of the last compile task
                          banner: '<%= options.compileBanner %>'
                      },
-                     files: {"public/css/main.css": "assets/less/main.less"}
+                     files: "<%= options.less.files %>"
                  },
                  production: {
                      options: {
-                         paths: ["assets/less"],
+                         paths: '<%= options.less.path %>',
                          //minify css
                          cleancss: true,
                          //track the date of the last compile task
                          banner: '<%= options.compileBanner %>'
                      },
-                     files: {"<%= options.publish %>/css/main.min.css": "<%= options.base %>/less/main.less"}
+                     files: "<%= options.less.files %>"
                  }
              },
                    
@@ -111,11 +121,11 @@
                         livereload: true
                     },
                     css: {
-                        files: '<%= options.base %>/less/main.less', 
+                        files: '<%= options.watch.css.files %>', 
                         tasks: ['less:local', 'notify:css']
                     }, 
                     js: {
-                        files: '<%= options.base %>/less/main.less', 
+                        files: '<%= options.less.files %>', 
                         tasks: ['uglify:vendor', 'notify:js']
                     } 
             },
@@ -157,9 +167,49 @@
                     }
                     
                 }
-            }
+            },
+            
+
             
          });
+        
+        grunt.registerTask('preparefiles', 'iterates over all module directories and compiles modules js files', function() {
+
+            var publish = grunt.config.get('options.publish');
+            var lessFiles = [];
+            var watchLessFiles = []
+
+            // read all subdirectories from assets folder
+            grunt.file.expand(grunt.config.get('options.base') + '/*').forEach(function(module){
+                //prepare the local object
+                var lessFile = {}
+                //prepare info
+                var taskUnit = {
+                      less : {
+                          //include every less files of the submodule in the main.less file and save it to es : "public/coss/common.min.css"
+                          target : publish + '/css/' + module.split('/').pop() + '.min.css',
+                          source : module + '/less/main.less'
+                      }
+                }
+                //check if the source file exist
+                if(grunt.file.exists(taskUnit.less.source)){
+                     //build the proper object
+                     lessFile[taskUnit.less.target] = taskUnit.less.source
+                     //push the object into the general files object
+                     lessFiles.push(lessFile)
+                     watchLessFiles.push(taskUnit.less.source)
+                }
+
+            });
+            //set the proper option
+            grunt.config.set('options.less.files', lessFiles);
+            grunt.config.set('options.watch.css.files', watchLessFiles);
+            
+            grunt.config.get('options.watch.css.files').forEach(function(value){
+                grunt.log.writeln(value)
+            })
+                       
+        });
          
          //load tasks
          grunt.loadNpmTasks('grunt-contrib-concat');
@@ -173,7 +223,7 @@
          //task for production (compile and minify all)
          grunt.registerTask('default', ['clean:all', 'concat:vendor', 'uglify', 'clean:concat', 'less:production', 'notify:all']);
          //task for local env (compile and minify only less file and vendor)
-         grunt.registerTask('local', ['clean:all', 'concat:vendor', 'uglify:vendor', 'clean:concat', 'less:local', 'watch']);
+         grunt.registerTask('local', ['clean:all', 'preparefiles', 'concat:vendor', 'uglify:vendor', 'clean:concat', 'less:local', 'watch:css']);
          //prova notify
          grunt.registerTask('not', ['notify']);
      };

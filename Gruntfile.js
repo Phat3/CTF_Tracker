@@ -10,6 +10,10 @@
              
             //common options for package
             options: {
+                //Name of the application
+                name: 'CTF_Tracker',
+                //Current Version number
+                version : '1.0.0',
                 // Base path to your assets folder
                 base: 'assets',
                 // Published assets path
@@ -24,7 +28,7 @@
                         "<%= options.vendor.base %>/jquery-legacy/dist/jquery.min.js"
                     ],
                 },            
-                // Notification messages
+                // Notification messages options
                 notify: {
                         css: {
                                 title: 'Css compiled succesfully!',
@@ -38,17 +42,18 @@
                                 title: 'CTF_Tracker Reloaded!',
 				message: 'Files were modified, recompiled and site reloaded'
                         }
+                },
+                //uglify options
+                uglify : {
+                    banner : '/* <%= options.name %> - v<%= options.version %> - ' +
+                             'compiled at <%= grunt.template.today("yyyy-mm-dd HH:MM") %> */\n'
                 }
 
             },
             
             // Concatenate multiple js files into one
             concat: {
-                    js: {
-                        //strip all comments in the source file
-                        options: {
-                            banner : 'file created at'
-                        },
+                    js: {                       
                         src: '',
                         dest: ''
                     },
@@ -56,7 +61,7 @@
                         src: '<%= options.vendor.concat %>',
                         dest: '<%= options.publish %>/js/concat.vendor.js'
                     }
-               },
+             },
                
             //compile and minify less file   
             less: {
@@ -127,7 +132,7 @@
                     },
             },
             
-            // Javascript minify
+            // Javascript minify (run this task only in production)
             uglify: {
                 vendor : {
                     options: {
@@ -138,7 +143,10 @@
                             //drop console.* debug calls
                             compress: {
                                 drop_console: true
-                            }
+                            },
+                            //track the date of the last compilation
+                            banner: '<%= options.uglify.banner %>'
+                            
                     },                   
                     files: { 
                         "<%= options.publish %>/js/vendor.min.js": ["<%= options.publish %>/js/concat.vendor.js"] 

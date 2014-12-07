@@ -7,10 +7,6 @@ and open the template in the editor.
     Created on : 6-dic-2014, 15.32.19
     Author     : Sebastiano Mariani <mariani.sebastiano@gmail.com>
 */
-.box {
-  color: #fe33ac;
-  border-color: #fdcdea;
-}
-html {
-  background-color: red;
+body {
+  color: yellow;
 }

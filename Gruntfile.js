@@ -122,7 +122,7 @@
                     },
                     css: {
                         files: '<%= options.watch.css.files %>', 
-                        tasks: ['less:local', 'notify:css']
+                        tasks: ['compileless', 'notify:css']
                     }, 
                     js: {
                         files: '<%= options.less.files %>', 
@@ -167,7 +167,7 @@
                     }
                     
                 }
-            },
+            }
             
 
             
@@ -177,12 +177,12 @@
 
             var publish = grunt.config.get('options.publish');
             var lessFiles = [];
-            var watchLessFiles = []
+            var watchLessFiles = [];
 
             // read all subdirectories from assets folder
             grunt.file.expand(grunt.config.get('options.base') + '/*').forEach(function(module){
                 //prepare the local object
-                var lessFile = {}
+                var lessFile = {};
                 //prepare info
                 var taskUnit = {
                       less : {
@@ -190,14 +190,14 @@
                           target : publish + '/css/' + module.split('/').pop() + '.min.css',
                           source : module + '/less/main.less'
                       }
-                }
+                };
                 //check if the source file exist
                 if(grunt.file.exists(taskUnit.less.source)){
                      //build the proper object
-                     lessFile[taskUnit.less.target] = taskUnit.less.source
+                     lessFile[taskUnit.less.target] = taskUnit.less.source;
                      //push the object into the general files object
-                     lessFiles.push(lessFile)
-                     watchLessFiles.push(taskUnit.less.source)
+                     lessFiles.push(lessFile);
+                     watchLessFiles.push(taskUnit.less.source);
                 }
 
             });
@@ -225,5 +225,5 @@
          //task for local env (compile and minify only less file and vendor)
          grunt.registerTask('local', ['clean:all', 'preparefiles', 'concat:vendor', 'uglify:vendor', 'clean:concat', 'less:local', 'watch:css']);
          //prova notify
-         grunt.registerTask('not', ['notify']);
+         grunt.registerTask('compileless', ['preparefiles', 'less:local']);
      };

@@ -26,9 +26,17 @@
                 },            
                 // Notification messages
                 notify: {
-                        watch: {
-                                title: 'CTF_Tracker Deployed!',
-                                message: 'Files were modified, recompiled and site reloaded'
+                        css: {
+                                title: 'Css compiled succesfully!',
+                                message: 'Less files were modified, recompiled and copied in public/css/'
+                        },
+                        js: {
+                                title: 'JS minified succesfully!',
+                                message: 'JS files were modified, reminified and copied in public/js/'
+                        },
+                        all: {
+                                title: 'CTF_Tracker Reloaded!',
+				message: 'Files were modified, recompiled and site reloaded'
                         }
                 }
 
@@ -82,18 +90,42 @@
                                   "<%= options.publish %>/js/vendor.min.js": "<%= options.publish %>/js/vendor.js"
                             },
                     },
-                }
+                },
             },
             
             // Display notifications
             notify: {
-                    watch: {
+                    css: {
                             options: {
-                                    title: '<%= options.notify.watch.title %>',
-                                    message: '<%= options.notify.watch.message %>'
+                                    title: '<%= options.notify.css.title %>',
+                                    message: '<%= options.notify.css.message %>'
+                            }
+                    },
+                    js: {
+                            options: {
+                                    title: '<%= options.notify.js.title %>',
+                                    message: '<%= options.notify.js.message %>'
+                            }
+                    },
+                    all: {
+                            options: {
+                                    title: '<%= options.notify.all.title %>',
+                                    message: '<%= options.notify.all.message %>'
                             }
                     }
             },
+            
+            // Watch for files and folder changes
+            watch: {
+                    options: {
+                            livereload: true
+                    },
+                    
+                    css: {
+                            files: '<%= options.base %>/less/main.less', 
+                            tasks: ['less', 'notify:css']
+                    },
+            }
             
          });
          
@@ -102,12 +134,13 @@
          grunt.loadNpmTasks('grunt-contrib-less');
          grunt.loadNpmTasks('grunt-contrib-uglify');
          grunt.loadNpmTasks('grunt-notify');
+         grunt.loadNpmTasks('grunt-contrib-watch');
          
          //divide our task in subtask for each environment
          //task for production (compile and minify all)
-         grunt.registerTask('default', ['concat:vendor', 'uglify', 'less']);
+         grunt.registerTask('default', ['concat:vendor', 'uglify', 'less:production']);
          //task for local env (compile and minify only less file and vendor)
-         grunt.registerTask('local', ['concat:vendor', 'uglify:vendor', 'less']);
+         grunt.registerTask('local', ['concat:vendor', 'uglify:vendor', 'less:local']);
          //prova notify
          grunt.registerTask('not', ['notify']);
      };

@@ -113,7 +113,11 @@
                     css: {
                         files: '<%= options.base %>/less/main.less', 
                         tasks: ['less:local', 'notify:css']
-                    }                  
+                    }, 
+                    js: {
+                        files: '<%= options.base %>/less/main.less', 
+                        tasks: ['uglify:vendor', 'notify:js']
+                    } 
             },
             
             // Clean files and folders before replacement
@@ -169,7 +173,7 @@
          //task for production (compile and minify all)
          grunt.registerTask('default', ['clean:all', 'concat:vendor', 'uglify', 'clean:concat', 'less:production', 'notify:all']);
          //task for local env (compile and minify only less file and vendor)
-         grunt.registerTask('local', ['clean:all', 'concat:vendor', 'uglify:vendor', 'clean:concat', 'less:local', 'watch:css']);
+         grunt.registerTask('local', ['clean:all', 'concat:vendor', 'uglify:vendor', 'clean:concat', 'less:local', 'watch']);
          //prova notify
          grunt.registerTask('not', ['notify']);
      };

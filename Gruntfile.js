@@ -49,12 +49,12 @@
                 // Less compiler options
                 less:{
                     paths : ["assets/*"],
-                    files : ""
+                    files : "" //set by the preparefiles task
                 },
                 // Watch compiler options
                 watch:{
                     css:{
-                        files : ""
+                        files : "" //set by the preparefiles task
                     }
                 }                             
             },
@@ -118,11 +118,13 @@
             // Watch for files and folder changes
             watch: {
                     options: {
-                        livereload: true
+                        livereload: true,
+                        //prevent the spawn of a child process, with this solution we can set the files option in the watch event and compile only the file that has been changed
+                        nospawn: true
                     },
                     css: {
                         files: '<%= options.watch.css.files %>', 
-                        tasks: ['compileless', 'notify:css']
+                        tasks: ['less:local', 'notify:css']
                     }, 
                     js: {
                         files: '<%= options.less.files %>', 
@@ -173,9 +175,10 @@
             
          });
         
-        grunt.registerTask('preparefiles', 'iterates over all module directories and compiles modules js files', function() {
-
+        grunt.registerTask('preparefiles', 'Scan the asset subdirectory and compile every less file', function() {
+            //publisg root directory
             var publish = grunt.config.get('options.publish');
+            //initialize the proper objecys
             var lessFiles = [];
             var watchLessFiles = [];
 
@@ -204,12 +207,36 @@
             //set the proper option
             grunt.config.set('options.less.files', lessFiles);
             grunt.config.set('options.watch.css.files', watchLessFiles);
-            
+            //DEBUG
             grunt.config.get('options.watch.css.files').forEach(function(value){
-                grunt.log.writeln(value)
-            })
+                grunt.log.writeln(value);
+            });
                        
         });
+        
+        //catch the watch:css event and set the proper source file that has to be compiled
+        grunt.event.on('watch', function(action, filepath){
+            //set less src
+            if(filepath.split('.').pop() === 'less'){
+                //get the root publish directory
+                var publish = grunt.config.get('options.publish');
+                //set the target of the compilation process 
+                var target = publish + '/css/' + filepath.split('/')[1] + '.min.css';
+                //create the object
+                var lessFile = {};
+                //all sub files are included into main.less file of the module, compile it
+                var source = filepath.split('/')[0] + '/' +filepath.split('/')[1] + '/less/main.less';
+                //set the object
+                lessFile[target] = source;
+                //set the proper option
+                grunt.config.set('options.less.files', lessFile);  
+            }
+            //set js source
+            else{
+                //TODO
+            }
+        });
+
          
          //load tasks
          grunt.loadNpmTasks('grunt-contrib-concat');
@@ -224,6 +251,5 @@
          grunt.registerTask('default', ['clean:all', 'concat:vendor', 'uglify', 'clean:concat', 'less:production', 'notify:all']);
          //task for local env (compile and minify only less file and vendor)
          grunt.registerTask('local', ['clean:all', 'preparefiles', 'concat:vendor', 'uglify:vendor', 'clean:concat', 'less:local', 'watch:css']);
-         //prova notify
-         grunt.registerTask('compileless', ['preparefiles', 'less:local']);
+       
      };

@@ -23,7 +23,14 @@
                         "<%= options.vendor.base %>/angularjs/angular.js",
                         "<%= options.vendor.base %>/jquery-legacy/dist/jquery.min.js"
                     ],
-                },
+                },            
+                // Notification messages
+                notify: {
+                        watch: {
+                                title: 'CTF_Tracker Deployed!',
+                                message: 'Files were modified, recompiled and site reloaded'
+                        }
+                }
 
             },
             
@@ -78,16 +85,29 @@
                 }
             },
             
+            // Display notifications
+            notify: {
+                    watch: {
+                            options: {
+                                    title: '<%= options.notify.watch.title %>',
+                                    message: '<%= options.notify.watch.message %>'
+                            }
+                    }
+            },
+            
          });
          
          //load tasks
          grunt.loadNpmTasks('grunt-contrib-concat');
          grunt.loadNpmTasks('grunt-contrib-less');
          grunt.loadNpmTasks('grunt-contrib-uglify');
+         grunt.loadNpmTasks('grunt-notify');
          
          //divide our task in subtask for each environment
          //task for production (compile and minify all)
-         grunt.registerTask('production', ['concat:vendor', 'uglify', 'less']);
+         grunt.registerTask('default', ['concat:vendor', 'uglify', 'less']);
          //task for local env (compile and minify only less file and vendor)
          grunt.registerTask('local', ['concat:vendor', 'uglify:vendor', 'less']);
+         //prova notify
+         grunt.registerTask('not', ['notify']);
      };

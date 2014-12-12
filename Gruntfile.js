@@ -248,7 +248,7 @@
          
          //divide our task in subtask for each environment
          //task for production (compile and minify all)
-         grunt.registerTask('default', ['clean:all', 'concat:vendor', 'uglify', 'clean:concat', 'less:production', 'notify:all']);
+         grunt.registerTask('default', ['clean:all', 'preparefiles', 'concat:vendor', 'uglify', 'clean:concat', 'less:production', 'notify:all']);
          //task for local env (compile and minify only less file and vendor)
          grunt.registerTask('local', ['clean:all', 'preparefiles', 'concat:vendor', 'uglify:vendor', 'clean:concat', 'less:local', 'watch:css']);
        

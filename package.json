@@ -3,7 +3,6 @@
   "repository": "git@github.com:Seba0691/CTF_Tracker.git",
   "version": "1.0.0",
   "devDependencies": {
-    "coffee-script": "~1.6.3",
     "grunt": "~0.4.2",
     "grunt-contrib-clean": "^0.6.0",
     "grunt-contrib-concat": "^0.5.0",

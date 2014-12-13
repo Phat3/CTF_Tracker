@@ -2,7 +2,7 @@
  * @author Sebastino Mariani <mariani.sebastiano@gmail.com>
  */
 
-var app = angular.module('ctf_tracker.admin', [
+angular.module('ctf_tracker.admin', [
         'ui.router'
 ])
 
@@ -14,13 +14,14 @@ var app = angular.module('ctf_tracker.admin', [
         .state( 'home', {
             url : '/',
             views : {
-                'main' : { templateUrl : 'app/views/news-main-element.html' }
+                'side' : { templateUrl : 'views/admin/side.html' },
+                'main' : { template : '<h1>Ciao</h1>' }
             }
             
         } );
-});
+})
 
 //init page
-app.run( function(){
-
+.run( function(){
+    console.log('ciao')
 } );

@@ -32,7 +32,7 @@ It is made with:
 
 		  serverName : local.ctftracker.com
 
-		  documentRoot : <your_www_directory>/CTF_Tracker/public/
+		  documentRoot : your_www_directory/CTF_Tracker/public/
 
 	2. Make sure that your php has Mcrypt extension enabled
 

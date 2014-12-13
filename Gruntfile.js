@@ -28,8 +28,21 @@
                     //option for the concat task
                     concat: [
                         "<%= options.vendor.base %>/angularjs/angular.js",
-                        "<%= options.vendor.base %>/jquery-legacy/dist/jquery.min.js"
-                    ]
+                        "<%= options.vendor.base %>/jquery-legacy/dist/jquery.min.js",
+                        "<%= options.vendor.base %>/bootstrap/dist/js/bootstrap.min.js"
+                    ],
+                    //option for the copy task
+                    copy: {
+                        css: {
+                            //we put the minified vendor css in public/css/vendor
+                            publish : '<%= options.publish %>/css/vendor/',
+                            //specify the files that you want to copy
+                            files : [
+                                "<%= options.vendor.base %>/bootstrap/dist/css/bootstrap.min.css",
+                            ]
+                        }
+                    }
+                    
                 },            
                 // Notification messages options
                 notify: {
@@ -169,10 +182,18 @@
                     }
                     
                 }
+            },
+            //copy the vedor minified files in the public folder
+            copy: {
+                css: {
+                    //copy only the specified file and not its directory structure
+                    expand: true,
+                    flatten: true,
+                    src: '<%= options.vendor.copy.css.files %>',
+                    dest: '<%= options.vendor.copy.css.publish %>'
+                }
             }
-            
-
-            
+                      
          });
         
         grunt.registerTask('preparefiles', 'Scan the asset subdirectory and compile every less file', function() {
@@ -245,11 +266,12 @@
          grunt.loadNpmTasks('grunt-contrib-watch');
          grunt.loadNpmTasks('grunt-contrib-clean');
          grunt.loadNpmTasks('grunt-contrib-uglify');
+         grunt.loadNpmTasks('grunt-contrib-copy');
          
          //divide our task in subtask for each environment
          //task for production (compile and minify all)
-         grunt.registerTask('default', ['clean:all', 'preparefiles', 'concat:vendor', 'uglify', 'clean:concat', 'less:production', 'notify:all']);
+         grunt.registerTask('default', ['clean:all', 'preparefiles', 'concat:vendor', 'uglify', 'clean:concat', 'less:production', 'copy', 'notify:all']);
          //task for local env (compile and minify only less file and vendor)
-         grunt.registerTask('local', ['clean:all', 'preparefiles', 'concat:vendor', 'uglify:vendor', 'clean:concat', 'less:local', 'watch:css']);
+         grunt.registerTask('local', ['clean:all', 'preparefiles', 'concat:vendor', 'uglify:vendor', 'clean:concat', 'less:local', 'copy', 'watch:css']);
        
      };

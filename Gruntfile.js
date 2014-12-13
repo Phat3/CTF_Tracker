@@ -29,7 +29,8 @@
                     concat: [
                         "<%= options.vendor.base %>/angularjs/angular.js",
                         "<%= options.vendor.base %>/jquery-legacy/dist/jquery.min.js",
-                        "<%= options.vendor.base %>/bootstrap/dist/js/bootstrap.min.js"
+                        "<%= options.vendor.base %>/bootstrap/dist/js/bootstrap.min.js",
+                        "<%= options.vendor.base %>/angular-ui-router/release/angular-ui-router.min.js"
                     ],
                     //option for the copy task
                     copy: {
@@ -68,15 +69,25 @@
                 watch:{
                     css:{
                         files : "" //set by the preparefiles task
+                    },
+                    js:{
+                        files : "" //set by the preparefiles task
                     }
-                }                             
+                },
+                // Concat task options
+                concat:{                  
+                    files : "" //set by the preparefiles task
+                },
+                // Copy task options
+                copy:{                  
+                    files : "" //set by the preparefiles task
+                }
             },
             
             // Concatenate multiple js files into one
             concat: {
                     js: {                       
-                        src: '',
-                        dest: ''
+                        files: '<%= options.concat.files %>'
                     },
                     vendor: {
                         src: '<%= options.vendor.concat %>',
@@ -128,7 +139,7 @@
                     }
             },
             
-            // Watch for files and folder changes
+            // Watch for files and folder changes (only local env)
             watch: {
                     options: {
                         livereload: true,
@@ -140,8 +151,8 @@
                         tasks: ['less:local', 'notify:css']
                     }, 
                     js: {
-                        files: '<%= options.less.files %>', 
-                        tasks: ['uglify:vendor', 'notify:js']
+                        files: '<%= options.watch.js.files %>', 
+                        tasks: ['concat:js', 'copy:js', 'clean:concat','notify:js']
                     } 
             },
             
@@ -191,6 +202,9 @@
                     flatten: true,
                     src: '<%= options.vendor.copy.css.files %>',
                     dest: '<%= options.vendor.copy.css.publish %>'
+                },
+                js : {
+                    files: '<%= options.copy.files %>'
                 }
             }
                       
@@ -201,18 +215,30 @@
             var publish = grunt.config.get('options.publish');
             //initialize the proper objecys
             var lessFiles = [];
+            var jsCopyFiles = [];
+            var jsConcatFiles = [];
             var watchLessFiles = [];
+            var watchJsFiles = [];
 
             // read all subdirectories from assets folder
             grunt.file.expand(grunt.config.get('options.base') + '/*').forEach(function(module){
                 //prepare the local object
                 var lessFile = {};
+                //prepare the local object
+                var jsCopyFile = {};
+                //prepare the local object
+                var jsConcatFile = {};
                 //prepare info
                 var taskUnit = {
                       less : {
                           //include every less files of the submodule in the main.less file and save it to es : "public/coss/common.min.css"
                           target : publish + '/css/' + module.split('/').pop() + '.min.css',
                           source : module + '/less/main.less'
+                      },
+                      js : {
+                          targetConcat : publish + '/js/' + 'concat.' + module.split('/').pop() + '.min.js',
+                          targetCopy : publish + '/js/' + module.split('/').pop() + '.min.js',
+                          source : module + '/js/*.js'
                       }
                 };
                 //check if the source file exist
@@ -223,11 +249,25 @@
                      lessFiles.push(lessFile);
                      watchLessFiles.push(taskUnit.less.source);
                 }
-
+                //check if exist at least one file in the source pattern
+                if(grunt.file.expand(taskUnit.js.source).length > 0){
+                    //build the proper object
+                    jsConcatFile[taskUnit.js.targetConcat] = taskUnit.js.source;
+                    jsCopyFile[taskUnit.js.targetCopy] = taskUnit.js.targetConcat;
+                    //push the object into the general files object
+                    jsCopyFiles.push(jsCopyFile);
+                    //push the object into the general files object
+                    jsConcatFiles.push(jsConcatFile);
+                    watchJsFiles.push(taskUnit.js.source);
+                }
+               
             });
             //set the proper option
             grunt.config.set('options.less.files', lessFiles);
             grunt.config.set('options.watch.css.files', watchLessFiles);
+            grunt.config.set('options.concat.files', jsConcatFiles);
+            grunt.config.set('options.copy.files', jsCopyFiles);
+            grunt.config.set('options.watch.js.files', watchJsFiles);
             //DEBUG
             grunt.config.get('options.watch.css.files').forEach(function(value){
                 grunt.log.writeln(value);
@@ -237,10 +277,10 @@
         
         //catch the watch:css event and set the proper source file that has to be compiled
         grunt.event.on('watch', function(action, filepath){
+            //get the root publish directory
+            var publish = grunt.config.get('options.publish');
             //set less src
-            if(filepath.split('.').pop() === 'less'){
-                //get the root publish directory
-                var publish = grunt.config.get('options.publish');
+            if(filepath.split('.').pop() === 'less'){                
                 //set the target of the compilation process 
                 var target = publish + '/css/' + filepath.split('/')[1] + '.min.css';
                 //create the object
@@ -254,7 +294,21 @@
             }
             //set js source
             else{
-                //TODO
+                //set the target of the compilation process 
+                var targetConcat = publish + '/js/' + 'concat.' + filepath.split('/')[1] + '.min.js';
+                //set the target of the compilation process 
+                var targetCopy = publish + '/js/' + filepath.split('/')[1] + '.min.js';
+                //create the object
+                var jsCopyFile = {};
+                var jsConcatFile = {};
+                //all sub files are included into main.less file of the module, compile it
+                var source = filepath.split('/')[0] + '/' +filepath.split('/')[1] + '/js/*.js';
+                //set the object
+                jsCopyFile[targetCopy] = targetConcat;
+                jsConcatFile[targetConcat] = source;
+                //set the proper option
+                grunt.config.set('options.copy.files', jsCopyFile);
+                grunt.config.set('options.concat.files', jsConcatFile);
             }
         });
 
@@ -270,8 +324,8 @@
          
          //divide our task in subtask for each environment
          //task for production (compile and minify all)
-         grunt.registerTask('default', ['clean:all', 'preparefiles', 'concat:vendor', 'uglify', 'clean:concat', 'less:production', 'copy', 'notify:all']);
+         grunt.registerTask('default', ['clean:all', 'preparefiles', 'concat', 'uglify', 'less:production', 'copy', 'clean:concat', 'notify:all']);
          //task for local env (compile and minify only less file and vendor)
-         grunt.registerTask('local', ['clean:all', 'preparefiles', 'concat:vendor', 'uglify:vendor', 'clean:concat', 'less:local', 'copy', 'watch:css']);
+         grunt.registerTask('local', ['clean:all', 'preparefiles', 'concat', 'uglify:vendor', 'less:local', 'copy', 'clean:concat', 'watch']);
        
      };

@@ -81,6 +81,10 @@
                 // Copy task options
                 copy:{                  
                     files : "" //set by the preparefiles task
+                },
+                // Copy task options
+                uglify:{                  
+                    files : "" //set by the preparefiles task
                 }
             },
             
@@ -174,24 +178,26 @@
             
             // Javascript minify (run this task only in production)
             uglify: {
-                vendor : {
-                    options: {
-                            //delete all comments
-                            preserveComments: false,
-                            //prevent changes to variable and function names
-                            mangle: false,
-                            //drop console.* debug calls
-                            compress: {
-                                drop_console: true
-                            },
-                            //track the date of the last compile task
-                            banner: '<%= options.compileBanner %>'
-                            
-                    },                   
+                options: {
+                    //delete all comments
+                    preserveComments: false,
+                    //prevent changes to variable and function names
+                    mangle: false,
+                    //drop console.* debug calls
+                    compress: {
+                        drop_console: true
+                    },
+                    //track the date of the last compile task
+                    banner: '<%= options.compileBanner %>'
+
+                },
+                vendor : {                                    
                     files: { 
                         "<%= options.publish %>/js/vendor.min.js": ["<%= options.publish %>/js/concat.vendor.js"] 
-                    }
-                    
+                    }                   
+                },
+                js : {
+                   files: '<%= options.uglify.files %>' 
                 }
             },
             //copy the vedor minified files in the public folder
@@ -267,9 +273,10 @@
             grunt.config.set('options.watch.css.files', watchLessFiles);
             grunt.config.set('options.concat.files', jsConcatFiles);
             grunt.config.set('options.copy.files', jsCopyFiles);
+            grunt.config.set('options.uglify.files', jsCopyFiles);
             grunt.config.set('options.watch.js.files', watchJsFiles);
             //DEBUG
-            grunt.config.get('options.watch.css.files').forEach(function(value){
+            grunt.config.get('options.uglify.files').forEach(function(value){
                 grunt.log.writeln(value);
             });
                        
@@ -324,7 +331,7 @@
          
          //divide our task in subtask for each environment
          //task for production (compile and minify all)
-         grunt.registerTask('default', ['clean:all', 'preparefiles', 'concat', 'uglify', 'less:production', 'copy', 'clean:concat', 'notify:all']);
+         grunt.registerTask('default', ['clean:all', 'preparefiles', 'concat', 'uglify', 'less:production', 'copy:css', 'clean:concat', 'notify:all']);
          //task for local env (compile and minify only less file and vendor)
          grunt.registerTask('local', ['clean:all', 'preparefiles', 'concat', 'uglify:vendor', 'less:local', 'copy', 'clean:concat', 'watch']);
        

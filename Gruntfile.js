@@ -24,22 +24,31 @@
                 //we use bower as packet manager then all vendor package are under bower_components directory
                 vendor: {
                     //our root directory for every vendor package
-                    base: 'bower_components',
+                    baseBower: 'bower_components',
                     //option for the concat task
                     concat: [
-                        "<%= options.vendor.base %>/angularjs/angular.js",
-                        "<%= options.vendor.base %>/jquery-legacy/dist/jquery.min.js",
-                        "<%= options.vendor.base %>/bootstrap/dist/js/bootstrap.min.js",
-                        "<%= options.vendor.base %>/angular-ui-router/release/angular-ui-router.min.js"
+                        "<%= options.vendor.baseBower %>/angularjs/angular.js",
+                        "<%= options.vendor.baseBower %>/jquery-legacy/dist/jquery.min.js",
+                        "<%= options.vendor.baseBower %>/bootstrap/dist/js/bootstrap.min.js",
+                        "<%= options.vendor.baseBower %>/angular-ui-router/release/angular-ui-router.min.js"
                     ],
                     //option for the copy task
                     copy: {
                         css: {
                             //we put the minified vendor css in public/css/vendor
-                            publish : '<%= options.publish %>/css/vendor/',
+                            publish : '<%= options.publish %>/css/',
                             //specify the files that you want to copy
                             files : [
-                                "<%= options.vendor.base %>/bootstrap/dist/css/bootstrap.min.css",
+                                "<%= options.vendor.baseBower %>/bootstrap/dist/css/bootstrap.min.css",
+                                "<%= options.vendor.baseBower %>/font-awesome/css/font-awesome.min.css",
+                            ]
+                        },
+                        fonts: {
+                            //we put the minified vendor css in public/css/vendor
+                            publish : '<%= options.publish %>/fonts/',
+                            //specify the files that you want to copy
+                            files : [
+                                "<%= options.vendor.baseBower %>/font-awesome/fonts/*",
                             ]
                         }
                     }
@@ -209,6 +218,13 @@
                     src: '<%= options.vendor.copy.css.files %>',
                     dest: '<%= options.vendor.copy.css.publish %>'
                 },
+                fonts: {
+                    //copy only the specified file and not its directory structure
+                    expand: true,
+                    flatten: true,
+                    src: '<%= options.vendor.copy.fonts.files %>',
+                    dest: '<%= options.vendor.copy.fonts.publish %>'
+                },
                 js : {
                     files: '<%= options.copy.files %>'
                 }
@@ -331,7 +347,7 @@
          
          //divide our task in subtask for each environment
          //task for production (compile and minify all)
-         grunt.registerTask('default', ['clean:all', 'preparefiles', 'concat', 'uglify', 'less:production', 'copy:css', 'clean:concat', 'notify:all']);
+         grunt.registerTask('default', ['clean:all', 'preparefiles', 'concat', 'uglify', 'less:production', 'copy:css', 'copy:fonts', 'clean:concat', 'notify:all']);
          //task for local env (compile and minify only less file and vendor)
          grunt.registerTask('local', ['clean:all', 'preparefiles', 'concat', 'uglify:vendor', 'less:local', 'copy', 'clean:concat', 'watch']);
        

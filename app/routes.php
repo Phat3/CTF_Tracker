@@ -24,13 +24,6 @@ Route::get('/prova', function()
 	return View::make('admin.index');
 });
 
-Route::get('/bene', function()
-{
-    $log = new ErrorLog;
-    $response = $log->saveElement('400', 'casino');
-    print_r($response);
-});
-
-
+Route::controller('/admin/server', 'ApiServerController');
 
 

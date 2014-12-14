@@ -4,7 +4,8 @@
 
 angular.module('ctf_tracker.admin', [
         'ui.router',
-        'ngAnimate'
+        'ngAnimate',
+        'ctf_tracker.admin.server'
 ])
 
 .config(function( $stateProvider, $urlRouterProvider){
@@ -15,27 +16,20 @@ angular.module('ctf_tracker.admin', [
         .state( 'home', {
             url : '/',
             views : {               
-                main : { templateUrl : 'views/admin/main.html', controller: 'main1Controller' }   
+                main : { templateUrl : 'views/admin/main.html'}   
             }
             
         } )
-        .state( 'page2', {
-            url : '/page2',
+        .state( 'serverlogs', {
+            url : '/server/logs',
             views : {
                
-                main : { templateUrl : 'views/admin/main2.html', controller: 'main2Controller'  }   
+                main : { templateUrl : 'views/admin/server_logs.html', controller : 'ServerController'}   
             }
             
         } );
 })
 
-.controller('main1Controller', function($scope) {
-    $scope.pageClass = 'page-home';
-})
-
-.controller('main2Controller', function($scope) {
-    $scope.pageClass = 'page-home';
-})
 //init page
 .run( function(){
     console.log('ciao')

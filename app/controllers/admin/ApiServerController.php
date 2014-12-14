@@ -8,6 +8,6 @@
 class ApiServerController extends BaseController{
    
     public function getErrorLog(){
-        
+        return ErrorLog::orderBy('created_at', 'desc')->paginate(15);
     }
 }

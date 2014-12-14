@@ -229,16 +229,13 @@
                     <h4>Phat3</h4>
                 </li>
                 <li>
-                    <a href="index.html"><i class="fa fa-dashboard fa-fw"></i> Dashboard</a>
+                    <a ui-sref='home'><i class="fa fa-dashboard fa-fw"></i> Dashboard</a>
                 </li>
                 <li class="active">
-                    <a href="#"><i class="fa fa-bar-chart-o fa-fw"></i> Charts<span class="fa arrow"></span></a>
-                    <ul class="nav nav-second-level">
+                    <a href="#"><i class="fa fa-bar-chart-o fa-fw"></i> Server<span class="fa arrow"></span></a>
+                    <ul class="nav nav-second-level">                       
                         <li>
-                            <a class="active" href="flot.html">Flot Charts</a>
-                        </li>
-                        <li>
-                            <a href="morris.html">Morris.js Charts</a>
+                            <a ui-sref='serverlogs'>Logs</a>
                         </li>
                     </ul>
                     <!-- /.nav-second-level -->

@@ -1,0 +1,40 @@
+<div class="row">
+    <div class="col-lg-12">
+        <h1 class="page-header">Server Logs</h1>
+    </div>
+</div>
+
+
+<div class="row">
+    <div class="col-lg-12">       
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <td>Code</td>
+                    <td>Method</td>
+                    <td>Url</td>
+                    <td>IP</td>
+                    <td>Timestamp</td>
+                    <td class="textright">Actions</td>
+                </tr>
+            </thead>
+            <tbody>               
+                <tr id="logid-{{log.id}}" ng-repeat="log in errorLogs">                   
+                    <td>{{ log.code }}</td>
+                    <td>{{ log.method }}</td>
+                    <td>{{ log.url }}</td>
+                    <td>{{ log.ip }}</td>
+                    <td>{{ log.created_at }}</td>
+                    <td class="textright">
+                        <a class="btn btn-small btn-default btn-ctf-default " href="javascript:showDetails({{log.id}}})">
+                            <span><i class="fa fa-search"></i></span>
+                        </a>
+                        <a class="btn btn-small btn-danger btn-ctf-danger" href="javascript:deleteLog({{log.id}})">
+                            <span ><i class="fa fa-trash"></i></span>
+                        </a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+  </div>
+</div>

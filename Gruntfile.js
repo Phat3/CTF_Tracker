@@ -31,7 +31,8 @@
                         "<%= options.vendor.baseBower %>/jquery-legacy/dist/jquery.min.js",
                         "<%= options.vendor.baseBower %>/bootstrap/dist/js/bootstrap.min.js",
                         "<%= options.vendor.baseBower %>/angular-ui-router/release/angular-ui-router.min.js",
-                        "<%= options.vendor.baseBower %>/metisMenu/dist/metisMenu.min.js"
+                        "<%= options.vendor.baseBower %>/metisMenu/dist/metisMenu.min.js",
+                        "<%= options.vendor.baseBower %>/angular-animate/angular-animate.min.js"
                     ],
                     //option for the copy task
                     copy: {

@@ -2,6 +2,9 @@
 <html lang="en" ng-app="ctf_tracker.admin">
     <head>
         <meta charset="UTF-8">
+      
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
         <title>Laravel PHP Framework</title>
         <link rel="stylesheet" href="/css/bootstrap.min.css">
         <link rel="stylesheet" href="/css/font-awesome.min.css">
@@ -19,7 +22,7 @@
            
             @include('admin.layout.sidebar')
             <div id="page-wrapper">
-                <div ui-view="main"></div>           
+                <div class="animate-fade-up" ui-view="main"></div>           
             </div>
             
         </div>

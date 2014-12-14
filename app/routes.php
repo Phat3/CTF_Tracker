@@ -10,6 +10,9 @@
 | and give it the Closure to execute when that URI is requested.
 |
 */
+//redefine blade tags because of angularJS
+Blade::setContentTags('<%', '%>'); 		
+Blade::setEscapedContentTags('<%%', '%%>'); 
 
 Route::get('/', function()
 {

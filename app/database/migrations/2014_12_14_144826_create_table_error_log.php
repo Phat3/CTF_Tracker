@@ -17,6 +17,7 @@ class CreateTableErrorLog extends Migration {
 		    $table->string('method')->nullable();
                     $table->text('description');
                     $table->timestamp('created_at');
+                    $table->timestamp('updated_at');
                 });
 	}
 

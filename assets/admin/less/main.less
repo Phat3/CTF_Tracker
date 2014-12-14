@@ -8,6 +8,69 @@ and open the template in the editor.
     Author     : Sebastiano Mariani <mariani.sebastiano@gmail.com>
 */
 
+@imgPath : '/img/admin';
+@borderColor : greenyellow;
+
 body{
-    color : yellow;
+    height: 100vh;
+    overflow: hidden;
+}
+
+.navbar-default{
+ 
+    @fontsColor : green;
+    
+    .hoverEffect{
+        background-color: green;
+        color: black;
+    }
+    
+    background: url('@{imgPath}/black_linen_v2.png');
+    border-color: @borderColor;
+    
+    a {
+        color: @fontsColor;
+    }
+    
+
+    .nav>li>a:hover, .nav>li>a:focus {
+        .hoverEffect;
+    }
+    
+    .sidebar{
+        ul {
+           li {
+                border-bottom: 1px solid @borderColor;
+            } 
+           li a.active {
+               .hoverEffect;
+            }
+        }
+        
+        .user{
+            text-align : center;
+            margin-top : 20px;
+            img{
+                border: 1px solid @borderColor;
+                padding: 8px;
+                width: 90px;
+                border-radius: 50%;
+            }
+            
+            h4{
+                color: gray;
+            }
+        }
+        
+    } 
+    
+    #side-menu{
+        min-height: 100vh;
+    }
+      
+}
+
+#page-wrapper{
+    border-left: 1px solid @borderColor;
+    background: url('@{imgPath}/triangles.png');  
 }

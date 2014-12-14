@@ -1,8 +1,8 @@
-$(function() {
-
-    $('#side-menu').metisMenu();
-
-});
+$(window).load(function(){
+    setTimeout(function(){
+        $('#side-menu').metisMenu();    
+    }, 1000)    
+}) 
 
 //Loads the correct sidebar on window load,
 //collapses the sidebar on window resize.

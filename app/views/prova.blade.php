@@ -6,6 +6,7 @@
         <link rel="stylesheet" href="/css/bootstrap.min.css">
         <link rel="stylesheet" href="/css/font-awesome.min.css">
         <link rel="stylesheet" href="/css/sb-admin-2.min.css">
+        <link rel="stylesheet" href="/css/admin.min.css">
         <script src="/js/vendor.min.js"></script>
         <script src="/js/admin.min.js"></script>
         <script src="/js/sb-admin-2.min.js"></script>
@@ -22,4 +23,5 @@
         </div>
         
     </body>
+    
 </html>

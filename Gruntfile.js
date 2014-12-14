@@ -30,7 +30,8 @@
                         "<%= options.vendor.baseBower %>/angularjs/angular.js",
                         "<%= options.vendor.baseBower %>/jquery-legacy/dist/jquery.min.js",
                         "<%= options.vendor.baseBower %>/bootstrap/dist/js/bootstrap.min.js",
-                        "<%= options.vendor.baseBower %>/angular-ui-router/release/angular-ui-router.min.js"
+                        "<%= options.vendor.baseBower %>/angular-ui-router/release/angular-ui-router.min.js",
+                        "<%= options.vendor.baseBower %>/metisMenu/dist/metisMenu.min.js"
                     ],
                     //option for the copy task
                     copy: {
@@ -100,6 +101,9 @@
                         files : "" //set by the preparefiles task
                     },
                     html : {
+                        files : "" //set by the preparefiles task
+                    },
+                    img : {
                         files : "" //set by the preparefiles task
                     }
                 },
@@ -253,6 +257,10 @@
                 html : {
                     //copy only the specified file and not its directory structure
                     files: '<%= options.copy.html.files %>'
+                },
+                img : {
+                    //copy only the specified file and not its directory structure
+                    files: '<%= options.copy.img.files %>'
                 }
             }
                       
@@ -266,9 +274,11 @@
             var jsCopyFiles = [];
             var jsConcatFiles = [];
             var htmlCopyFiles = [];
+            var imgCopyFiles = [];
             var watchLessFiles = [];
             var watchJsFiles = [];
             var watchHtmlFiles = [];
+            var watchImgFiles = [];
 
             // read all subdirectories from assets folder
             grunt.file.expand(grunt.config.get('options.base') + '/*').forEach(function(module){
@@ -295,6 +305,12 @@
                           dest : publish + '/views/' + module.split('/').pop() + '/',
                           expand : true,
                           flatten : true
+                      },
+                      img : {
+                          src : module + '/img/*',
+                          dest : publish + '/img/' + module.split('/').pop() + '/',
+                          expand : true,
+                          flatten : true 
                       }
                 };
                 //check if the source file exist
@@ -323,6 +339,13 @@
                     //push the object into the general files object
                     watchHtmlFiles.push(taskUnit.html.src);                 
                 }
+                //check if exist at least one file in the source pattern
+                if(grunt.file.expand(taskUnit.img.src).length > 0){                                    
+                    //push the object into the general files object
+                    imgCopyFiles.push(taskUnit.img);
+                    //push the object into the general files object
+                    watchImgFiles.push(taskUnit.img.src);                 
+                }
                
             });
             //set the proper option
@@ -332,12 +355,10 @@
             grunt.config.set('options.copy.js.files', jsCopyFiles);
             grunt.config.set('options.uglify.files', jsCopyFiles);
             grunt.config.set('options.copy.html.files', htmlCopyFiles);
+            grunt.config.set('options.copy.img.files', imgCopyFiles);
             grunt.config.set('options.watch.js.files', watchJsFiles);
             grunt.config.set('options.watch.html.files', watchHtmlFiles);
-            //DEBUG
-            grunt.config.get('options.uglify.files').forEach(function(value){
-                grunt.log.writeln(value);
-            });
+            grunt.config.set('options.watch.img.files', watchImgFiles);
                        
         });
         
@@ -401,7 +422,7 @@
          
          //divide our task in subtask for each environment
          //task for production (compile and minify all)
-         grunt.registerTask('default', ['clean:all', 'preparefiles', 'concat', 'uglify', 'less:production', 'copy:css', 'copy:fonts', 'copy:html', 'clean:concat', 'notify:all']);
+         grunt.registerTask('default', ['clean:all', 'preparefiles', 'concat', 'uglify', 'less:production', 'copy:css', 'copy:fonts', 'copy:html', 'copy:img', 'clean:concat', 'notify:all']);
          //task for local env (compile and minify only less file and vendor)
          grunt.registerTask('local', ['clean:all', 'preparefiles', 'concat', 'uglify:vendor', 'less:local', 'copy', 'clean:concat', 'notify:all', 'watch']);
        

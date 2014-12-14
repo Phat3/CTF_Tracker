@@ -14,8 +14,7 @@ angular.module('ctf_tracker.admin', [
         .state( 'home', {
             url : '/',
             views : {
-                'side' : { templateUrl : 'views/admin/side.html' },
-                'main' : { template : '<h1>Ciao</h1>' }
+                'side' : { templateUrl : 'views/admin/side.html' },                
             }
             
         } );

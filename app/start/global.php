@@ -49,6 +49,7 @@ Log::useFiles(storage_path().'/logs/laravel.log');
 App::error(function(Exception $exception, $code)
 {
 	Log::error($exception);
+        Event::fire($code, $exception); //launch an event trapped in /app/events/LogEvent.php
 });
 
 /*
@@ -79,3 +80,5 @@ App::down(function()
 */
 
 require app_path().'/filters.php';
+require app_path().'/events/LogEvent.php';
+require app_path().'/helpers/Helper.php';

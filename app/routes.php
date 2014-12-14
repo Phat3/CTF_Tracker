@@ -18,7 +18,7 @@ Route::get('/', function()
 
 Route::get('/prova', function()
 {
-	return View::make('prova');
+	return View::make('admin.index');
 });
 
 

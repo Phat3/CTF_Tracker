@@ -16,10 +16,12 @@
     <body>
 
         <div id="wrapper">
-            <div ui-view="side"></div>
+           
+            @include('admin.layout.sidebar')
             <div id="page-wrapper">
                 <div ui-view="main"></div>           
             </div>
+            
         </div>
         
     </body>

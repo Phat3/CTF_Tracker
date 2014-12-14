@@ -14,7 +14,16 @@ angular.module('ctf_tracker.admin', [
         .state( 'home', {
             url : '/',
             views : {
-                'side' : { templateUrl : 'views/admin/side.html' },                
+               
+                main : { templateUrl : 'views/admin/main.html' }   
+            }
+            
+        } )
+        .state( 'page2', {
+            url : '/page2',
+            views : {
+               
+                main : { templateUrl : 'views/admin/main2.html' }   
             }
             
         } );
